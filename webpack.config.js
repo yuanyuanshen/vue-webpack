@@ -1,6 +1,8 @@
 const path = require('path')
 const HTMLPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const webpack = require('webpack')
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -27,12 +29,19 @@ const config = {
         loader: 'html-loader'
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.scss$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader']
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          // {
+          //   loader: MiniCssExtractPlugin.loader,
+          //   options: {
+          //     publicPath: '../'
+          //   }
+          // },
+          isDev ? 'sass-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ]
+        // use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(woff2?)(\?.*)?$/,
@@ -111,5 +120,16 @@ if (isDev) {
 } else {
   config.mode = 'production'
   config.devtool = 'source-map'
+  // css压缩
+  ;(config.optimization = {
+    minimizer: [new OptimizeCSSAssetsPlugin({})]
+  }),
+    // 生产环境下单独提取css
+    config.plugins.push(
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
+        chunkFilename: '[id].css'
+      })
+    )
 }
 module.exports = config

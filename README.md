@@ -416,6 +416,43 @@ new HTMLPlugin({
 
 针对生成的 html 移除注释、删除空行、html 压缩等操作
 
+#### 2.MiniCssExtractPlugin
+
+##### 将 CSS 提取为独立的文件的插件
+
+[MiniCssExtractPlugin](https://webpack.docschina.org/plugins/mini-css-extract-plugin/#src/components/Sidebar/Sidebar.jsx)
+
+查看文件中 webpack.config.js 配置
+
+```json
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+module.exports = {
+  plugins: [
+    new MiniCssExtractPlugin({
+      // 类似 webpackOptions.output里面的配置 可以忽略
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+  ],
+  module: {
+    rules: [
+            {
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          isDev ? 'sass-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ]
+      },
+    ]
+  }
+}
+```
+
+测试 css 被单独提取，文件大小为 main.css 264K
+
+##### 高级配置示例
+
 ### 参考（特别感谢）
 
 1. [你真的理解 devDependencies 和 dependencies 区别吗?](https://blog.csdn.net/achenyuan/article/details/80899783)
@@ -424,3 +461,4 @@ new HTMLPlugin({
 4. [了解 vue 里的 Runtime Only 和 Runtime+Compiler](https://www.jianshu.com/p/466510d84e36)
 5. [It’s no longer allowed to omit the ‘-loader’ suffix ](https://www.jianshu.com/p/71a94516b607)
 6. [vue 项目从 0 搭建(webpack 手动搭建)](https://blog.csdn.net/qq_17175013/article/details/82947957)
+7. [webpack4 mini-css-extract-plugin](https://www.cnblogs.com/ysk123/p/9990082.html)
