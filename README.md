@@ -18,6 +18,8 @@ devDependencies 是只会在开发环境下依赖的模块，生产环境不会�
 
 ### 项目包版本
 
+[项目地址](https://github.com/yuanyuanshen/vue-webpack)
+
 ```json
     "dependencies": {
         "@xunlei/vue-lazy-component": "^1.1.3",
