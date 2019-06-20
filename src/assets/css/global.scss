@@ -1,0 +1,47 @@
+// 弹框中的进度条
+.dailog-steps {
+    // 设置 通用 标题 size weight
+    .el-step__title {
+        font-size: 13px !important;
+        font-weight: normal !important;
+    }
+    // 设置 通用 线条 margin border
+    .el-step__line,
+    .el-step__line-inner {
+        margin-right: 40px !important;
+        margin-left: 40px !important;
+        margin-top: 2px;
+        height: 1px !important;
+        border: none;
+    }
+    // 设置 通用 圆圈size border
+    .el-step__icon.is-text {
+        font-size: 12px;
+        font-weight: normal;
+        height: 26px;
+        width: 26px;
+        border: 1px solid !important;
+    }
+    // 设置 通用 圆圈内字体
+    .el-step__icon-inner {
+        font-weight: normal !important;
+    }
+    // 设置 当前节点 样式
+    .is-process .el-step__icon.is-text {
+        background-color: #1890ff;
+        border: 1px solid #1890ff !important;
+        color: white;
+    }
+    // 设置 已完成节点 样式
+    .el-step__head.is-success {
+        color: #1890ff !important;
+        border-color: #1890ff !important;
+    }
+    .el-step__title.is-success {
+        color: rgba(0, 0, 0, 0.6) !important;
+    }
+    // 设置 已完成线条 样式
+    .is-success .el-step__line {
+        background-color: #1890ff !important;
+    }
+}

@@ -362,6 +362,60 @@ if (isDev) {
 module.exports = config
 ```
 
+### webpack 指定 mode
+
+这部分厉害了，看完文档就知道为什么使用 vue-cli 脚手架 vue init webpack [项目名]生成的 webpack 配置文件包含
+
+```js
+;-build | -webpack.base.conf.js | -webpack.base.dev.js | -webpack.base.prod.js
+```
+
+#### 配置
+
+development(开发环境) 和 production(生产环境) 这两个环境下的构建目标存在着巨大差异。
+
+- 开发环境中：强大的 source map 和一个有着 live reloading(实时重新加载) 或 hot module replacement(热模块替换) 能力的 localhost server
+- 生产环境：关注点在于压缩 bundle、更轻量的 source map、资源优化等，通过这些优化方式改善加载时间。
+
+我们先从安装 webpack-merge 开始，并将已经成型的那些代码进行分离：
+
+```
+npm install --save-dev webpack-merge
+```
+
+```
+- |- webpack.config.js
++ |- webpack.common.js
++ |- webpack.dev.js
++ |- webpack.prod.js
+```
+
+具体使用方式查看文档[webpack 指定 mode](https://webpack.docschina.org/guides/production/#%E6%8C%87%E5%AE%9A-mode)
+
+### 生产环境性能优化
+
+#### 1.html-webpack-plugin
+
+该插件将为你生成一个 HTML5 文件， 其中包括使用 script 标签的 body 中的所有 webpack 包。
+
+[插件配置项地址](https://github.com/jantimon/html-webpack-plugin#options)
+
+```json
+new HTMLPlugin({
+      template: 'index.html',
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true
+      }
+    }),
+```
+
+针对生成的 html 移除注释、删除空行、html 压缩等操作
+
 ### 参考（特别感谢）
 
 1. [你真的理解 devDependencies 和 dependencies 区别吗?](https://blog.csdn.net/achenyuan/article/details/80899783)

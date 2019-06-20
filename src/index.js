@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './app.vue'
-import './assets/css/global.css'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import './assets/css/global.scss'
 
 // const root = document.createElement('div')
 // document.body.appendChild(root)
@@ -8,6 +10,8 @@ import './assets/css/global.css'
 // new Vue({
 //   render: h => h(App) //h就是vue中的createApp参数
 // }).$mount('#app') //将app挂载到body下的div上
+
+Vue.use(ElementUI)
 
 new Vue({
   el: '#app',
