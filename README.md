@@ -416,7 +416,7 @@ new HTMLPlugin({
 
 针对生成的 html 移除注释、删除空行、html 压缩等操作
 
-#### 2.MiniCssExtractPlugin
+#### 2.mini-css-extract-plugin
 
 ##### 将 CSS 提取为独立的文件的插件
 
@@ -451,7 +451,35 @@ module.exports = {
 
 测试 css 被单独提取，文件大小为 main.css 264K
 
-##### 高级配置示例
+##### 阶段进行压缩
+
+webpack5 可能会内置 CSS 压缩器，webpack4 需要自己使用压缩器，可以使用 optimize-css-assets-webpack-plugin 插件。 设置 optimization.minimizer 覆盖 webpack 默认提供的，确保也指定一个 JS 压缩器
+
+```json
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourcMap: true
+      }),
+      new OptimizeCSSAssetsPlugin({}),
+    ],
+  }
+```
+
+测试 css 被单独提取，文件大小为 main.css 219K 比压缩前减少 45K
+
+#### 3.uglifyjs-webpack-plugin
+
+##### 遇到的错误
+
+ERROR in bundle.js from UglifyJs
+Unexpected token: punc «(» [src/app.vue:21,0][bundle.js:70060,7]
+
+解决方法： [配置 babel](https://github.com/webpack-contrib/uglifyjs-webpack-plugin/issues/104)
+
+未使用前 bundle.js 1937KB 使用后压缩到 752KB
 
 ### 参考（特别感谢）
 
@@ -462,3 +490,7 @@ module.exports = {
 5. [It’s no longer allowed to omit the ‘-loader’ suffix ](https://www.jianshu.com/p/71a94516b607)
 6. [vue 项目从 0 搭建(webpack 手动搭建)](https://blog.csdn.net/qq_17175013/article/details/82947957)
 7. [webpack4 mini-css-extract-plugin](https://www.cnblogs.com/ysk123/p/9990082.html)
+8. [MiniCssExtractPlugin 需要添加 babel](https://www.cnblogs.com/weiqinl/p/9773048.html)
+9. [webpack-bundle-analyzer 打包文件分析工具](https://www.cnblogs.com/hss-blog/p/10244315.html)
+10. [SplitChunksPlugin](https://segmentfault.com/a/1190000016623314)
+11. [Webpack SplitChunksPlugin 的三种模式](https://github.com/wayou/wayou.github.io/issues/40)

@@ -1,7 +1,10 @@
 const path = require('path')
 const HTMLPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const webpack = require('webpack')
 const isDev = process.env.NODE_ENV === 'development'
@@ -10,7 +13,8 @@ const config = {
   target: 'web',
   entry: path.join(__dirname, 'src/index.js'),
   output: {
-    filename: 'bundle.js',
+    filename: '[name].[chunkhash].bundle.js',
+    // filename: 'bundle.js',
     path: path.join(__dirname, 'dist')
   },
   resolve: {
@@ -37,7 +41,7 @@ const config = {
           //     publicPath: '../'
           //   }
           // },
-          isDev ? 'sass-loader' : MiniCssExtractPlugin.loader,
+          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
           'css-loader',
           'sass-loader'
         ]
@@ -74,6 +78,13 @@ const config = {
             }
           }
         ]
+      },
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader'
+        }
       }
     ]
   },
@@ -122,13 +133,83 @@ if (isDev) {
   config.devtool = 'source-map'
   // css压缩
   ;(config.optimization = {
-    minimizer: [new OptimizeCSSAssetsPlugin({})]
+    minimizer: [
+      new UglifyJsPlugin({
+        parallel: true,
+        sourceMap: true,
+        parallel: true,
+        uglifyOptions: {
+          warnings: false,
+          parse: {},
+          compress: {},
+          mangle: true, // Note `mangle.properties` is `false` by default.
+          output: null,
+          toplevel: false,
+          nameCache: null,
+          ie8: false,
+          keep_fnames: false
+        }
+      }),
+      new OptimizeCSSAssetsPlugin({})
+    ],
+    splitChunks: {
+      chunks: 'initial',
+      minSize: 30000,
+      minChunks: 1,
+      maxAsyncRequests: 5,
+      maxInitialRequests: 3,
+      automaticNameDelimiter: '~',
+      name: true,
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        commons: {
+          name: 'comomns',
+          minChunks: 2, // 最小共用次数
+          minSize: 0, //代码最小多大，进行抽离
+          priority: 1 //该配置项是设置处理的优先级，数值越大越优先处理
+        }
+      }
+    }
   }),
     // 生产环境下单独提取css
     config.plugins.push(
       new MiniCssExtractPlugin({
         filename: '[name].css',
         chunkFilename: '[id].css'
+      }),
+      // 使用 npm run build --report 查看分析报告
+      new BundleAnalyzerPlugin({
+        //  可以是`server`，`static`或`disabled`。
+        //  在`server`模式下，分析器将启动HTTP服务器来显示软件包报告。
+        //  在“静态”模式下，会生成带有报告的单个HTML文件。
+        //  在`disabled`模式下，你可以使用这个插件来将`generateStatsFile`设置为`true`来生成Webpack Stats JSON文件。
+        analyzerMode: 'server',
+        //  将在“服务器”模式下使用的主机启动HTTP服务器。
+        analyzerHost: '127.0.0.1',
+        //  将在“服务器”模式下使用的端口启动HTTP服务器。
+        analyzerPort: 8888,
+        //  路径捆绑，将在`static`模式下生成的报告文件。
+        //  相对于捆绑输出目录。
+        reportFilename: 'report.html',
+        //  模块大小默认显示在报告中。
+        //  应该是`stat`，`parsed`或者`gzip`中的一个。
+        //  有关更多信息，请参见“定义”一节。
+        defaultSizes: 'parsed',
+        //  在默认浏览器中自动打开报告
+        openAnalyzer: true,
+        //  如果为true，则Webpack Stats JSON文件将在bundle输出目录中生成9
+        generateStatsFile: false,
+        //  如果`generateStatsFile`为`true`，将会生成Webpack Stats JSON文件的名字。
+        //  相对于捆绑输出目录。
+        statsFilename: 'stats.json',
+        //  stats.toJson（）方法的选项。
+        //  例如，您可以使用`source：false`选项排除统计文件中模块的来源。
+        //  在这里查看更多选项：https：  //github.com/webpack/webpack/blob/webpack-1/lib/Stats.js#L21
+        statsOptions: null,
+        logLevel: 'info' // 日志级别。可以是'信息'，'警告'，'错误'或'沉默'。
       })
     )
 }
