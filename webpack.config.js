@@ -6,6 +6,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+
 const webpack = require('webpack')
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -171,6 +173,12 @@ if (isDev) {
           minSize: 0, //代码最小多大，进行抽离
           priority: 1 //该配置项是设置处理的优先级，数值越大越优先处理
         }
+        // styles: {
+        //   name: 'styles',
+        //   test: /\.(sa|sc|c)ss$/,
+        //   chunks: 'all',
+        //   enforce: true
+        // }
       }
     }
   }),
@@ -210,6 +218,15 @@ if (isDev) {
         //  在这里查看更多选项：https：  //github.com/webpack/webpack/blob/webpack-1/lib/Stats.js#L21
         statsOptions: null,
         logLevel: 'info' // 日志级别。可以是'信息'，'警告'，'错误'或'沉默'。
+      }),
+      new CompressionPlugin({
+        filename: '[path].gz[query]',
+        test: new RegExp(
+          '\\.(js|css)$' //压缩 js 与 css
+        ),
+        threshold: 500, // 当文件超过限制大小 使用gzip
+        minRatio: 0.8,
+        algorithm: 'gzip'
       })
     )
 }

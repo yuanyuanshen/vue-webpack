@@ -481,6 +481,28 @@ Unexpected token: punc «(» [src/app.vue:21,0][bundle.js:70060,7]
 
 未使用前 bundle.js 1937KB 使用后压缩到 752KB
 
+#### 4.CompressionPlugin
+
+当我们的项目越来越庞大是时候 会发现 即使做了 code split 代码压缩 动态加载 等等一系列优化之后 页面的响应速度依旧很慢
+
+这个时候时候可以使用 compression-webpack-plugin 这个插件
+
+```json
+new CompressionPlugin({
+  "filename": "[path].gz[query]",
+  "test": new RegExp(
+    "\\.(js|css)$" //压缩 js 与 css
+  ),
+  "threshold": 500, // 当文件超过限制大小 使用gzip
+  "minRatio": 0.8,
+  "algorithm": "gzip"
+})
+```
+
+该插件的作用是 在超过限定的文件大小的 时候会生成一个跟文件同名的 gz 包,这个时候我们需要在改下 nginx 的配置 启用 gzip 压缩并 开启 gzip_static
+
+vendors~main.772d21ef3139973e4cab.bundle.js.gz 可以将原来 819KB 压缩到 220KB 压缩力度还是非常大的
+
 ### 参考（特别感谢）
 
 1. [你真的理解 devDependencies 和 dependencies 区别吗?](https://blog.csdn.net/achenyuan/article/details/80899783)
@@ -494,3 +516,6 @@ Unexpected token: punc «(» [src/app.vue:21,0][bundle.js:70060,7]
 9. [webpack-bundle-analyzer 打包文件分析工具](https://www.cnblogs.com/hss-blog/p/10244315.html)
 10. [SplitChunksPlugin](https://segmentfault.com/a/1190000016623314)
 11. [Webpack SplitChunksPlugin 的三种模式](https://github.com/wayou/wayou.github.io/issues/40)
+12. [基于 vue2.x 的 webpack4 配置(生产环境~)](https://www.jianshu.com/p/7e619520db28)
+13. [vue 进行 gzip 压缩和服务器如何开启 gzip)](https://blog.csdn.net/u013788943/article/details/79786558)
+14. [web 应用性能优化之 nginx + compression-webpack-plugin](https://blog.csdn.net/qq_37653449/article/details/85101227)
