@@ -15,8 +15,8 @@ const config = {
   target: 'web',
   entry: path.join(__dirname, 'src/index.js'),
   output: {
-    filename: '[name].[chunkhash].bundle.js',
-    // filename: 'bundle.js',
+    // filename: '[name].[chunkhash].bundle.js',
+    filename: 'bundle.js',
     path: path.join(__dirname, 'dist')
   },
   resolve: {
