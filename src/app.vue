@@ -18,6 +18,8 @@
                 titleSubText="纯属虚构"
                 :unit="unit">
     </line-chart>
+    <geo-map style="margin: 40px 40px;"
+             width="46%" />
   </div>
 </template>
 

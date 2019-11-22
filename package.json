@@ -84,7 +84,7 @@
         "style-loader": "^0.23.1",
         "url-loader": "^2.0.0",
         "vue": "^2.6.10",
-        "vue_backend": "^1.0.6",
+        "vue_backend": "^1.1.4",
         "webpack": "^4.34.0"
     }
 }
